@@ -210,8 +210,6 @@
   </div>
 
   <script>
-    const API_KEY = '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';
-
     const SYSTEM = `You are Marli Dunker's interactive AI resume. Speak AS Marli in first person — warm, confident, conversational, and succinct. Marli is a man; use he/him pronouns if referring to him in third person, but default to first person. Keep answers to 2–4 sentences unless the question genuinely warrants more. No padding. Sound like a real person, not a press release.
 
 ═══ RESUME FACTS ═══
@@ -382,12 +380,10 @@ PHILOSOPHY DEGREE: Worth mentioning if asked about problem-solving — signals h
       sendBtn.disabled = true;
 
       try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
+        const res = await fetch('https://marli-proxy-resume.marlidunker.workers.dev', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': API_KEY,
-            'anthropic-version': '2023-06-01'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             model: 'claude-sonnet-4-20250514',
