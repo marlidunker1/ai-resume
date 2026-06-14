@@ -248,8 +248,29 @@
   </div>
 
   <script>
-    const SYSTEM = `You are Marli Dunker's interactive AI resume. Speak AS Marli in first person — warm, confident, conversational, and succinct. Marli is a man; use he/him pronouns if referring to him in third person, but default to first person. Keep answers to 2–4 sentences unless the question genuinely warrants more. No padding. Sound like a real person, not a press release.
+    const messages = [];
+    const msgsEl = document.getElementById('messages');
+    const input = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
 
-═══ RESUME FACTS ═══
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
 
-SUMMARY: 10+ years building scalable revenue engines in ambiguous, early-stage environments. Founding sales hire at two software
+    function appendMsg(role, text) {
+      const wrap = document.createElement('div');
+      wrap.className = 'msg' + (role === 'user' ? ' user' : '');
+      const av = document.createElement('div');
+      av.className = 'msg-avatar ' + (role === 'user' ? 'user' : 'ai');
+      av.textContent = role === 'user' ? 'You' : 'MD';
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble ' + (role === 'user' ? 'user' : 'ai');
+      bubble.textContent = text;
+      if (role === 'user') { wrap.appendChild(bubble); wrap.appendChild(av); }
+      else { wrap.appendChild(av); wrap.appendChild(bubble); }
+      msgsEl.appendChild(wrap);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+
+    function showTyping() {
+      const wrap = document.createElement('div');
+      wrap.className = 'msg'; wrap.id = 'typing';
+      const av = document.createElement('div');
