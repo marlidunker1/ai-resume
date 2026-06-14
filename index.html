@@ -274,3 +274,62 @@
       const wrap = document.createElement('div');
       wrap.className = 'msg'; wrap.id = 'typing';
       const av = document.createElement('div');
+      av.className = 'msg-avatar ai'; av.textContent = 'MD';
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble ai';
+      bubble.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      wrap.appendChild(av); wrap.appendChild(bubble);
+      msgsEl.appendChild(wrap);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+
+    function removeTyping() {
+      const t = document.getElementById('typing');
+      if (t) t.remove();
+    }
+
+    async function askChip(el) {
+      const q = el.textContent;
+      document.getElementById('chips').style.display = 'none';
+      await ask(q);
+    }
+
+    async function send() {
+      const val = input.value.trim();
+      if (!val) return;
+      input.value = '';
+      await ask(val);
+    }
+
+    async function ask(text) {
+      appendMsg('user', text);
+      messages.push({ role: 'user', content: text });
+      showTyping();
+      sendBtn.disabled = true;
+
+      try {
+        const res = await fetch('https://marli-proxy-resume.marlidunker.workers.dev', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            messages: messages
+          })
+        });
+        const data = await res.json();
+        const reply = data.content?.find(b => b.type === 'text')?.text || "Hmm, something went wrong — try again!";
+        removeTyping();
+        appendMsg('assistant', reply);
+        messages.push({ role: 'assistant', content: reply });
+      } catch (e) {
+        removeTyping();
+        appendMsg('assistant', "Something went wrong on my end — please try again.");
+      }
+
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  </script>
+</body>
+</html>
